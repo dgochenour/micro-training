@@ -12,5 +12,5 @@ The instructions below reference the `NDDSHOME` environment variable. The easies
 2) Generate type support code with `rtiddsgen`
 ```
 cd exercise_01
-$NDDSHOME/bin/rtiddsgen -language C++11 -create typefiles -create examplefiles -create makefiles -platform x64Linux4gcc7.3.0 ProximityDatatype.idl
+$RTIMEHOME/rtiddsgen/scripts/rtiddsgen -micro -create typefiles -create makefiles -create examplefiles -language C++ ProximityDatatype.idl
 ```
