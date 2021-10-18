@@ -1,4 +1,4 @@
-# Remote "hands-on" exercises
+# RTI Connext Micro "hands-on" exercises
 
 The instructions below reference the `RTIMEHOME` and `RTIMEARCH` environment variables-- these hold the values of the Micro installation directory and the platform architecture, respectively. In the example below, `home/don/rti_connext_dds_micro-3.0.3` is the installation directory, and the platform architecture is `x64Linux5gcc9.3.0`:
 ```
@@ -6,7 +6,15 @@ export RTIMEHOME=home/don/rti_connext_dds_micro-3.0.3
 export RTIMEARCH=x64Linux5gcc9.3.0
 ```
 
+## Exercise 00
 
+Because Micro is delivered as source, it needs to be 
+
+```
+cd $RTIMEHOME
+$RTIMEHOME/resource/scripts/rtime-make --target Linux --name ${RTIMEARCH} -G "Unix Makefiles" --build --config Release
+$RTIMEHOME/resource/scripts/rtime-make --target Linux --name ${RTIMEARCH} -G "Unix Makefiles" --build --config Debug
+```
 ## Exercise 01
 
 1) Design IDL file to contain one type called "ProximityData"
