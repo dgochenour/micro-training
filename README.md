@@ -8,11 +8,13 @@ export RTIMEARCH=x64Linux5gcc9.3.0
 
 ## Exercise 00
 
-Because Micro is delivered as source, it needs to be 
+Because Micro is delivered as source, we need to build the libraries.
 
 ```
 cd $RTIMEHOME
+
 $RTIMEHOME/resource/scripts/rtime-make --target Linux --name ${RTIMEARCH} -G "Unix Makefiles" --build --config Release
+
 $RTIMEHOME/resource/scripts/rtime-make --target Linux --name ${RTIMEARCH} -G "Unix Makefiles" --build --config Debug
 ```
 ## Exercise 01
