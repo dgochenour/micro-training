@@ -43,13 +43,12 @@ DDS_Long sleep_time, DDS_Long count)
         goto done;
     }
 
-    retcode = application->initialize("publisher", 
-    "subscriber", 
-    domain_id,
-    udp_intf, 
-    peer, 
-    sleep_time, 
-    count);
+    retcode = application->initialize( 
+            domain_id,
+            udp_intf, 
+            peer, 
+            sleep_time, 
+            count);
     if (retcode != DDS_RETCODE_OK)
     {
         printf("failed Application initialize\n");
