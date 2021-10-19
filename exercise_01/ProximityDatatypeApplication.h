@@ -23,13 +23,14 @@ class Application
 
     static void help(char *appname);
 
-    DDS_ReturnCode_t initialize(const char *local_participant_name,
-    const char *remote_participant_name,
-    DDS_Long domain_id, 
-    char *udp_intf, 
-    char *peer, 
-    DDS_Long sleep_time, 
-    DDS_Long count);
+    DDS_ReturnCode_t initialize(
+            const char *local_participant_name,
+            const char *remote_participant_name,
+            DDS_Long domain_id, 
+            char *udp_intf, 
+            char *peer, 
+            DDS_Long sleep_time, 
+            DDS_Long count);
 
     DDS_ReturnCode_t enable();
 

@@ -40,3 +40,5 @@ $RTIMEHOME/resource/scripts/rtime-make --config Release --build --name $RTIMEARC
 ```
 ./objs/x64Linux5gcc9.3.0/ProximityDatatype_subscriber
 ```
+
+(Note that the as-generated sample code formatting has been manually cleaned up and declarations moved in-line. Because of this you may choose to reference the code in this repo instead of "stock" generated code)
