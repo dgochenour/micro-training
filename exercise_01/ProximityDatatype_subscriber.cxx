@@ -1,4 +1,4 @@
-
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,36 +17,31 @@
 class ProximityDataReaderListener : public DDSDataReaderListener
 {
 
-  public:
+public:
 
     virtual void on_data_available(DDSDataReader *reader);
 };
 
 template <typename T>
-void take_and_print(typename T::DataReader* reader)
+void take_and_print(typename T::DataReader *reader)
 {
     DDS_ReturnCode_t retcode;
     struct DDS_SampleInfo sample_info;
     T *sample = NULL;
 
     sample = T::TypeSupport::create_data();
-    if (sample == NULL)
-    {
-        printf("Failed sample initialize\n");
+    if (sample == NULL) {
+        std::cout << "ERROR: Failed sample initialize" << std::endl;
         return;
     }
 
     retcode = reader->take_next_sample(*sample, sample_info);
-    while (retcode == DDS_RETCODE_OK)
-    {
-        if (sample_info.valid_data)
-        {
-            printf("\nValid sample received\n");
+    while (retcode == DDS_RETCODE_OK) {
+        if (sample_info.valid_data) {
+            std::cout << "\nValid sample received\n" << std::endl;
             /* TODO read sample attributes here */
-        }
-        else
-        {
-            printf("\nSample received\n\tINVALID DATA\n");
+        } else {
+            std::cout << "\nSample received\n\tINVALID DATA" << std::endl;
         }
         retcode = reader->take_next_sample(*sample, sample_info);
     }
@@ -54,109 +49,113 @@ void take_and_print(typename T::DataReader* reader)
     T::TypeSupport::delete_data(sample);
 }
 
-void
-ProximityDataReaderListener::on_data_available(DDSDataReader * reader)
+void ProximityDataReaderListener::on_data_available(DDSDataReader * reader)
 {
     ProximityDataDataReader *hw_reader = ProximityDataDataReader::narrow(reader);
     take_and_print<ProximityData>(hw_reader);
 }
 
-int
-subscriber_main_w_args(DDS_Long domain_id, char *udp_intf, char *peer,
-DDS_Long sleep_time, DDS_Long count)
+int subscriber_main_w_args(
+        DDS_Long domain_id, 
+        char *udp_intf, 
+        char *peer,
+        DDS_Long sleep_time, 
+        DDS_Long count)
 {
-    DDSSubscriber *subscriber = NULL;
-    DDSDataReader *datareader = NULL;
     ProximityDataReaderListener *listener  = new ProximityDataReaderListener();
-    DDS_DataReaderQos dr_qos;
     DDS_ReturnCode_t retcode;
     Application *application = NULL;
-    RT_Registry_T *registry = NULL;
 
-    application = new Application();
-    if (application == NULL)
-    {
-        printf("failed Application new\n");
-        goto done;
+    try {
+
+        application = new Application();
+        if (application == NULL) {
+            printf("failed Application new\n");
+            throw "Application alloc";
+        }
+
+        retcode = application->initialize( 
+                domain_id,
+                udp_intf, 
+                peer, 
+                sleep_time, 
+                count);
+        if (retcode != DDS_RETCODE_OK) {
+            throw "Application init";
+        }
+
+        DDSSubscriber *subscriber = NULL;
+        subscriber = application->participant->create_subscriber(
+            DDS_SUBSCRIBER_QOS_DEFAULT,NULL,
+            DDS_STATUS_MASK_NONE);
+        if (subscriber == NULL) {
+            throw "subscriber";
+        }
+
+        DDS_DataReaderQos dr_qos;
+        retcode = subscriber->get_default_datareader_qos(dr_qos);
+        if (retcode != DDS_RETCODE_OK) {
+            throw "dr_qos";
+        }
+
+        dr_qos.resource_limits.max_samples = 32;
+        dr_qos.resource_limits.max_instances = 1;
+        dr_qos.resource_limits.max_samples_per_instance = 32;
+        dr_qos.reader_resource_limits.max_remote_writers = 10;
+        dr_qos.reader_resource_limits.max_remote_writers_per_instance = 10;
+        dr_qos.history.depth = 32;
+
+        /* Reliability QoS */
+        #ifdef USE_RELIABLE_QOS
+        dr_qos.reliability.kind = DDS_RELIABLE_RELIABILITY_QOS;
+        #else
+        dr_qos.reliability.kind = DDS_BEST_EFFORT_RELIABILITY_QOS;
+        #endif
+
+        DDSDataReader *datareader = NULL;
+        datareader = subscriber->create_datareader(
+            application->topic,
+            dr_qos,
+            listener,
+            DDS_DATA_AVAILABLE_STATUS);
+
+        if (datareader == NULL) {
+            throw "datareader";
+        }
+
+        retcode = application->enable();
+        if (retcode != DDS_RETCODE_OK) {
+            throw "application enable";
+        }
+
+    } catch (const char *msg) {
+
+        if (application != NULL) {
+            delete application;
+        }
+        if (listener != NULL) {
+            delete listener;
+        }
+        //DataReaderQos is automatically disposed by destructor
+
+        return DDS_RETCODE_ERROR;
     }
 
-    retcode = application->initialize(
-            domain_id,
-            udp_intf, 
-            peer, 
-            sleep_time, 
-            count);
-    if (retcode != DDS_RETCODE_OK)
-    {
-        printf("failed Application initialize\n");
-        goto done;
-    }
 
-    subscriber = application->participant->create_subscriber(
-        DDS_SUBSCRIBER_QOS_DEFAULT,NULL,
-        DDS_STATUS_MASK_NONE);
-    if (subscriber == NULL)
-    {
-        printf("subscriber == NULL\n");
-        goto done;
-    }
+    if (application->count != 0) {
 
-    retcode = subscriber->get_default_datareader_qos(dr_qos);
-    if (retcode != DDS_RETCODE_OK)
-    {
-        printf("failed get_default_datareader_qos\n");
-        goto done;
-    }
-
-    dr_qos.resource_limits.max_samples = 32;
-    dr_qos.resource_limits.max_instances = 1;
-    dr_qos.resource_limits.max_samples_per_instance = 32;
-    /* if there are more remote writers, you need to increase these limits */
-    dr_qos.reader_resource_limits.max_remote_writers = 10;
-    dr_qos.reader_resource_limits.max_remote_writers_per_instance = 10;
-    dr_qos.history.depth = 32;
-
-    /* Reliability QoS */
-    #ifdef USE_RELIABLE_QOS
-    dr_qos.reliability.kind = DDS_RELIABLE_RELIABILITY_QOS;
-    #else
-    dr_qos.reliability.kind = DDS_BEST_EFFORT_RELIABILITY_QOS;
-    #endif
-
-    datareader = subscriber->create_datareader(
-        application->topic,
-        dr_qos,
-        listener,
-        DDS_DATA_AVAILABLE_STATUS);
-
-    if (datareader == NULL)
-    {
-        printf("datareader == NULL\n");
-        goto done;
-    }
-
-    retcode = application->enable();
-    if (retcode != DDS_RETCODE_OK)
-    {
-        printf("failed to enable application\n");
-        goto done;
-    }
-
-    if (application->count != 0)
-    {
-        printf("Running for %d seconds, press Ctrl-C to exit\n",
-        application->count);
+        std::cout << "Running for " << application->count << 
+                "seconds, press Ctrl-C to exit" << std::endl;
         OSAPI_Thread_sleep(application->count * 1000);
-    }
-    else
-    {
+
+    } else {
+
         int sleep_loop_count =  (24 * 60 * 60) / 2000;
         int sleep_loop_left = (24 * 60 * 60) % 2000;
 
-        printf("Running for 24 hours, press Ctrl-C to exit\n");
+        std::cout << "Running for 24 hours, press Ctrl-C to exit" << std::endl;
 
-        while (sleep_loop_count)
-        {
+        while (sleep_loop_count) {
             OSAPI_Thread_sleep(2000  * 1000); /* sleep is in ms */
             --sleep_loop_count;
         }
@@ -164,26 +163,21 @@ DDS_Long sleep_time, DDS_Long count)
         OSAPI_Thread_sleep(sleep_loop_left * 1000);
     }
 
-    done:
-
-    if (application != NULL)
-    {
+    if (application != NULL) {
         delete application;
     }
 
-    if (listener != NULL)
-    {
+    if (listener != NULL) {
         delete listener;
     }
 
     //DataReaderQos is automatically disposed by destructor
 
-    return 0;
+    return DDS_RETCODE_OK;
 }
 
-#if !(defined(RTI_VXWORKS) && !defined(__RTP__))
-int
-main(int argc, char **argv)
+
+int main(int argc, char **argv)
 {
     DDS_Long i = 0;
     DDS_Long domain_id = 0;
@@ -258,17 +252,3 @@ main(int argc, char **argv)
 
     return subscriber_main_w_args(domain_id, udp_intf, peer, sleep_time, count);
 }
-#elif defined(RTI_VXWORKS)
-int
-subscriber_main(void)
-{
-    /* Explicitly configure args below */
-    DDS_Long domain_id = 44;
-    char *peer = "10.10.65.103";
-    char *udp_intf = NULL;
-    DDS_Long sleep_time = 1000;
-    DDS_Long count = 0;
-
-    return subscriber_main_w_args(domain_id, udp_intf, peer, sleep_time, count);
-}
-#endif
