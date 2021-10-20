@@ -42,3 +42,38 @@ $RTIMEHOME/resource/scripts/rtime-make --config Release --build --name $RTIMEARC
 ```
 
 (Note that the as-generated sample code formatting has been manually cleaned up and declarations moved in-line. Because of this you may choose to reference the code in this repo instead of "stock" generated code)
+
+## Exercise 02
+
+### Add Deadline QoS
+
+1) Add a finite value to the Deadline QoS by modifying the `dw_qos` struct in `ProximityDatatype_publisher.cxx` and `dr_qos` in `ProximityDatatype_subscriber.cxx`
+```
+        dw_qos.deadline.period.sec = 0;
+        dw_qos.deadline.period.nanosec = 500000000;
+```
+and
+```
+        dr_qos.deadline.period.sec = 0;
+        dr_qos.deadline.period.nanosec = 500000000;
+```
+
+Note that the publisher only writes once every 1s, so the deadline will be missed during every period. Add a listener callback to the DataReader's listener to handle this event. 
+- In the call to `subscriber->create_datareader()` change the status mask from `DDS_DATA_AVAILABLE_STATUS` to `DDS_DATA_AVAILABLE_STATUS | DDS_REQUESTED_DEADLINE_MISSED_STATUS`
+- In the `ProximityDataReaderListener` Class, implement the `on_requested_deadline_missed()` method.
+
+### Create XML Type Representation
+
+We can use Admin Console to help debug events like a QoS mismatch, and even subscribe to Topics. Because Connext Micro does not propagate the TypeObject as part of discovery, we need to load this type information into Admin console via an XML file. 
+
+1) First, increase the resource limits of the DomainParticipant in `ProximityDataTypeApplication.cxx` to allow for the extra entities that Admin Console introduces to the system. 
+```
+        dp_qos.resource_limits.remote_participant_allocation = 10; //was 8
+        dp_qos.resource_limits.remote_reader_allocation = 32; //was 8
+        dp_qos.resource_limits.remote_writer_allocation = 32; //was 8
+```
+2) Next use `rtiddsgen` to create an XML version of our IDL file
+```
+$RTIMEHOME/rtiddsgen/scripts/rtiddsgen -convertToXml ./ProximityDatatype.idl
+```
+This XML file can now be used to allow Admin Console to subscribe to data from this publisher.
