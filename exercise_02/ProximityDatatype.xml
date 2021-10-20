@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<types xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:////home/don/rti_connext_dds_micro-3.0.3/rtiddsgen/scripts/../resource/rtiddsgen/schema/rti_dds_topic_types.xsd">
+<const name="SENSOR_ID_MAX_LENGTH" type="uint32" value="16"/>
+<struct name= "ProximityData">
+  <member name="sensor_id" stringMaxLength="SENSOR_ID_MAX_LENGTH" type="string" key="true"/>
+  <member name="proximity" type="float32"/>
+</struct>
+</types>
