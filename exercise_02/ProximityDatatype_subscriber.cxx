@@ -142,7 +142,7 @@ int subscriber_main_w_args(
         }
 
     } catch (const char *msg) {
-
+        std::cerr << msg << std::endl;
         if (application != NULL) {
             delete application;
         }
