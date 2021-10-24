@@ -6,6 +6,8 @@ export RTIMEHOME=home/don/rti_connext_dds_micro-3.0.3
 export RTIMEARCH=x64Linux5gcc9.3.0
 ```
 
+![System architecture](img/architecture.jpg)
+
 ## Exercise 00
 
 Because Micro is delivered as source, we need to build the libraries.
