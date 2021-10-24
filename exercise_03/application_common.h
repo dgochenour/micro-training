@@ -6,18 +6,10 @@
 #include "rti_me_cpp.hxx"
 #endif
 
-/* Define USE_RELIABLE_QOS to use reliable
-* reliability; otherwise, best-effort is used
-*/
-#define USE_RELIABLE_QOS
-
 class Application
 {
   public:
     DDSDomainParticipant *participant; 
-    DDSTopic *topic; 
-    char topic_name[255];
-    char type_name[255];
     DDS_Long sleep_time;
     DDS_Long count;
 

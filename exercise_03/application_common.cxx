@@ -149,25 +149,7 @@ DDS_ReturnCode_t Application::initialize(
 
         if (this->participant == NULL) {
             throw "DomainParticipant";
-        }
-
-        strcpy(this->type_name,"ProximityData"); //TODO - name lookup
-        retcode = ProximityDataTypeSupport::register_type(this->participant,
-                this->type_name);
-        if (retcode != DDS_RETCODE_OK) {
-            throw "register type";
-        }
-
-        strcpy(this->topic_name, "Example ProximityData"); //TODO - update Topic name
-        this->topic = this->participant->create_topic(
-                this->topic_name,
-                this->type_name,
-                DDS_TOPIC_QOS_DEFAULT, 
-                NULL,
-                DDS_STATUS_MASK_NONE);
-        if (this->topic == NULL) {
-            throw "Topic";
-        }        
+        }       
 
     } catch (const char* msg) {
         std::cerr << msg << std::endl;
@@ -195,9 +177,6 @@ DDS_ReturnCode_t Application::enable()
 Application::Application()
 {
     this->participant = NULL;
-    this->topic = NULL;
-    this->topic_name[0] = '\0';
-    this->type_name[0] = '\0';
     this->sleep_time = 1000;
     this->count = 0;
 }
