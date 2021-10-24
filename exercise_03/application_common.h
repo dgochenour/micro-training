@@ -1,6 +1,6 @@
 
-#ifndef Application_h
-#define Application_h
+#ifndef APPLICATION_COMMON_H
+#define APPLICATION_COMMON_H
 
 #ifndef rti_me_cpp_hxx
 #include "rti_me_cpp.hxx"
