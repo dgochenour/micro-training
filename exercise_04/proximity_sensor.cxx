@@ -160,7 +160,7 @@ int main(int argc, char **argv)
     DDS_Long domain_id = 0;
     char *peer = NULL;
     char *udp_intf = NULL;
-    DDS_Long sleep_time = 100; // 100ms default
+    DDS_Long sleep_time = 50; // 50ms default
     DDS_Long count = 0;
 
     for (i = 1; i < argc; ++i)
