@@ -141,6 +141,8 @@ int brake_main(
         }
 
         // TODO - QoS changes
+        dr_qos.reliability.kind = DDS_RELIABLE_RELIABILITY_QOS;
+        dr_qos.durability.kind = DDS_TRANSIENT_LOCAL_DURABILITY_QOS;
 
         BrakeCommand_dr = subscriber->create_datareader(
                 brake_command_topic,

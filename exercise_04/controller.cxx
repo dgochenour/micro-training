@@ -212,6 +212,8 @@ int controller_main(
         }
 
         // TODO - QoS changes
+        dw_qos.reliability.kind = DDS_RELIABLE_RELIABILITY_QOS;
+        dw_qos.durability.kind = DDS_TRANSIENT_LOCAL_DURABILITY_QOS;
 
         BrakeCommand_dw = publisher->create_datawriter(
                 brake_command_topic,
