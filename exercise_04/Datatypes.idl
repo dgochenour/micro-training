@@ -1,0 +1,24 @@
+// (c) 2021 Copyright, Real-Time Innovations, Inc.  All rights reserved.
+// No duplications, whole or partial, manual or electronic, may be made
+// without express written permission.  Any such copies, or revisions thereof,
+// must display this notice unaltered.
+// This code contains trade secrets of Real-Time Innovations, Inc.
+
+// Topic names
+const string PROXIMITY_DATA_TOPIC_NAME = "Proximity Data";
+const string BRAKE_COMMAND_TOPIC_NAME = "Brake Command";
+
+const unsigned long SENSOR_ID_MAX_LENGTH = 16;
+const unsigned long DEVICE_ID_MAX_LENGTH = 16;
+
+// Type definitions
+
+struct ProximityData {
+    @key string<SENSOR_ID_MAX_LENGTH> sensor_id;
+    float proximity;
+};
+
+struct BrakeCommand {
+    @key string<DEVICE_ID_MAX_LENGTH> device_id;
+    float brake_intensity;
+};

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<types xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:////home/don/rti_connext_dds_micro-3.0.3/rtiddsgen/scripts/../resource/rtiddsgen/schema/rti_dds_topic_types.xsd">
+<const name="PROXIMITY_DATA_TOPIC_NAME" type="string" value="&quot;Proximity Data&quot;"/>
+<const name="BRAKE_COMMAND_TOPIC_NAME" type="string" value="&quot;Brake Command&quot;"/>
+<const name="SENSOR_ID_MAX_LENGTH" type="uint32" value="16"/>
+<const name="DEVICE_ID_MAX_LENGTH" type="uint32" value="16"/>
+<struct name= "ProximityData">
+  <member name="sensor_id" stringMaxLength="SENSOR_ID_MAX_LENGTH" type="string" key="true"/>
+  <member name="proximity" type="float32"/>
+</struct>
+<struct name= "BrakeCommand">
+  <member name="device_id" stringMaxLength="DEVICE_ID_MAX_LENGTH" type="string" key="true"/>
+  <member name="brake_intensity" type="float32"/>
+</struct>
+</types>

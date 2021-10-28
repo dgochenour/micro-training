@@ -104,3 +104,12 @@ Make modifications to the structure of the generated example to allow it to grow
 ``` 
 $ $RTIMEHOME/resource/scripts/rtime-make --config Release --build --name $RTIMEARCH --target Linux --source-dir . -G "Unix Makefiles" --delete
 ```
+
+## Exercise 04
+
+Next, we will add the "Brake Command" Topic, and appropriate endpoints in the applications that require them.
+
+1) Edit the IDL file to include the new type `BrakeCommand`, as well as `BRAKE_COMMAND_TOPIC_NAME`. The type support functions/methods required will be included in the Datatypes* files when we regenerate.
+
+2) flesh out the brake application to receive data from the BrakeCommands Topic
+
