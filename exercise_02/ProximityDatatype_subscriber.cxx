@@ -123,7 +123,7 @@ int subscriber_main_w_args(
         dr_qos.reliability.kind = DDS_BEST_EFFORT_RELIABILITY_QOS;
         #endif
         dr_qos.deadline.period.sec = 0;
-        dr_qos.deadline.period.nanosec = 500000000;
+        dr_qos.deadline.period.nanosec = 100000000;
 
         DDSDataReader *datareader = NULL;
         datareader = subscriber->create_datareader(

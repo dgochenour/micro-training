@@ -110,15 +110,16 @@ int brake_main(
 
         DDSSubscriber *subscriber = NULL;
         subscriber = application->participant->create_subscriber(
-            DDS_SUBSCRIBER_QOS_DEFAULT,NULL,
-            DDS_STATUS_MASK_NONE);
+                DDS_SUBSCRIBER_QOS_DEFAULT,
+                NULL,
+                DDS_STATUS_MASK_NONE);
         if (subscriber == NULL) {
             throw "subscriber";
         }
 
         retcode = BrakeCommandTypeSupport::register_type(
-                    application->participant,
-                    BrakeCommandTypePlugin_get_default_type_name());
+                application->participant,
+                BrakeCommandTypePlugin_get_default_type_name());
         if (retcode != DDS_RETCODE_OK) {
             throw "register BrakeCommand type";
         }
