@@ -85,7 +85,7 @@ int proximity_sensor_main(
         dw_qos.resource_limits.max_instances = 1;
         dw_qos.history.depth = 32;
         dw_qos.deadline.period.sec = 0;
-        dw_qos.deadline.period.nanosec = 500000000;
+        dw_qos.deadline.period.nanosec = 50000000;
 
         DDSDataWriter *datawriter = NULL;
         datawriter = publisher->create_datawriter(

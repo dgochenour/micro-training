@@ -52,17 +52,19 @@ $ ./objs/x64Linux5gcc9.3.0/ProximityDatatype_subscriber
 1) Add a finite value to the Deadline QoS by modifying the `dw_qos` struct in `ProximityDatatype_publisher.cxx` and `dr_qos` in `ProximityDatatype_subscriber.cxx`
 ```
         dw_qos.deadline.period.sec = 0;
-        dw_qos.deadline.period.nanosec = 500000000;
+        dw_qos.deadline.period.nanosec = 50000000; //50ms
 ```
 and
 ```
         dr_qos.deadline.period.sec = 0;
-        dr_qos.deadline.period.nanosec = 500000000;
+        dr_qos.deadline.period.nanosec = 100000000; //100ms
 ```
 
-Note that the publisher only writes once every 1s, so the deadline will be missed during every period. Add a listener callback to the DataReader's listener to handle this event. 
+With these settings, the DataReader is requesting that at least one sample per instance is received every 100ms, and the DataWriter is offering to write at least every 50ms. Note that at this point the publisher only writes once every 1s, so the deadline will be missed during every period. Add a listener callback to the DataReader's listener to handle this event. 
 - In the call to `subscriber->create_datareader()` change the status mask from `DDS_DATA_AVAILABLE_STATUS` to `DDS_DATA_AVAILABLE_STATUS | DDS_REQUESTED_DEADLINE_MISSED_STATUS`
 - In the `ProximityDataReaderListener` Class, implement the `on_requested_deadline_missed()` method.
+
+After observing that the listener callback works, modify the default sleep time on the publisher so that it actually writes every 50ms and does not miss the deadline.
 
 ### Create XML Type Representation
 

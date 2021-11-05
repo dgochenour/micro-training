@@ -69,7 +69,7 @@ int publisher_main_w_args(
         dw_qos.resource_limits.max_instances = 1;
         dw_qos.history.depth = 32;
         dw_qos.deadline.period.sec = 0;
-        dw_qos.deadline.period.nanosec = 500000000;
+        dw_qos.deadline.period.nanosec = 50000000;
 
         DDSDataWriter *datawriter = NULL;
         datawriter = publisher->create_datawriter(
@@ -135,7 +135,7 @@ int main(int argc, char **argv)
     DDS_Long domain_id = 0;
     char *peer = NULL;
     char *udp_intf = NULL;
-    DDS_Long sleep_time = 500; // 500ms default
+    DDS_Long sleep_time = 50; // 50ms default
     DDS_Long count = 0;
 
     for (i = 1; i < argc; ++i)

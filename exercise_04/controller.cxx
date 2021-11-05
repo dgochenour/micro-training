@@ -263,13 +263,13 @@ int controller_main(
 
         dr_qos.reliability.kind = DDS_BEST_EFFORT_RELIABILITY_QOS;
         dr_qos.deadline.period.sec = 0;
-        dr_qos.deadline.period.nanosec = 500000000;
+        dr_qos.deadline.period.nanosec = 100000000;
 
         ProximityData_dr = subscriber->create_datareader(
-            proximity_data_topic,
-            dr_qos,
-            listener,
-            DDS_REQUESTED_DEADLINE_MISSED_STATUS);
+                proximity_data_topic,
+                dr_qos,
+                listener,
+                DDS_REQUESTED_DEADLINE_MISSED_STATUS);
         if (ProximityData_dr == NULL) {
             throw "ProximityData_dr";
         }
