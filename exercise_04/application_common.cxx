@@ -205,9 +205,9 @@ Application::~Application()
 
     UDP_InterfaceFactoryProperty *udp_property = NULL;
     if (!registry->unregister(
-            NETIO_DEFAULT_UDP_NAME,
-            (RT_ComponentFactoryProperty**)&udp_property, 
-            NULL)) {
+                NETIO_DEFAULT_UDP_NAME,
+                (RT_ComponentFactoryProperty**)&udp_property, 
+                NULL)) {
         printf("failed to unregister udp\n");
         return;
     }
